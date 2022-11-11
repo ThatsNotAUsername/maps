@@ -29,6 +29,7 @@ df_development = pd.read_csv(path_to_data_folder + 'human-development-index.csv'
 df_learning_vs_expensives = pd.read_csv(path_to_data_folder + 'national-average-learning-outcomes-vs-government-expenditure-per-primary-student.csv')  # 
 df_student_achivings_vs_expensives = pd.read_csv(path_to_data_folder + 'share-of-students-achieving-no-or-minimum-learning-outcomes-by-expenditure-per-student.csv')  # 
 df_pop_female = pd.read_csv(path_to_data_folder + 'share-population-female.csv')  # 
+df_deaths_conflicts = pd.read_csv(path_to_data_folder + 'deaths-conflict-terrorism-per-100000.csv')  # 
 
 # dataframes of last year in the data set:
 df_pop_female_last_year = df_pop_female.loc[df_pop_female.groupby('Code')['Year'].transform('max').eq(df_pop_female['Year'])].reset_index(drop=True)
@@ -153,5 +154,23 @@ fig = px.choropleth(df, locations='Code', color='Human Development Index (UNDP)'
     
 fig.write_html(folder_gifs + "heatmap_developments.html")
 
+# deaths in covflicts per 100.000
+
+
+list(df_deaths_conflicts.columns)
+df_deaths_conflicts.rename({'Deaths - Conflict and terrorism - Sex: Both - Age: All Ages (Rate)':'Deaths - Conflict and terrorism'}, axis=1, inplace=True)
+
+fig = px.choropleth(df_deaths_conflicts, locations='Code', color='Deaths - Conflict and terrorism',
+                           color_continuous_scale="YlOrRd", locationmode='ISO-3',
+                           geojson=gj, animation_frame="Year",
+                           range_color=(min(df_deaths_conflicts['Deaths - Conflict and terrorism']), max(df_deaths_conflicts['Deaths - Conflict and terrorism'])/10)
+                          )    
+fig.update_traces(colorbar_ticksuffix='test')
+# leg = ax1.get_legend()
+# leg.get_texts()[0].set_text('New label 1')
+# leg.get_texts()[1].set_text('New label 2')
+
+
     
+fig.write_html(folder_gifs + "heatmap_deaths_conflicts.html")    
 
